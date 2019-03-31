@@ -17,8 +17,8 @@ import { TODOItem } from '@app/shared/models/todo-item';
 export class TodoItemCardComponent implements OnInit {
   @Input() public todoItem: TODOItem;
   @Input() public readOnlyTODO: boolean;
-  @Output() public todoDelete = new EventEmitter();
-  @Output() public todoEdit = new EventEmitter();
+  @Output() public todoDelete = new EventEmitter<string>();
+  @Output() public todoEdit = new EventEmitter<TODOItem>();
 
   constructor() {}
 

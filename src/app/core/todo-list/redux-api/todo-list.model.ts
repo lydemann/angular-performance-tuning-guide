@@ -4,4 +4,5 @@ export interface TodoListState {
   todos: TODOItem[];
   errors?: Error;
   isLoading: boolean;
+  editTodoItemIdx?: number;
 }

@@ -4,12 +4,14 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'environments/environment';
+import { TodoListStoreModule } from '../todo-list/redux-api/todo-list-store.module';
 
 @NgModule({
   imports: [
     CommonModule,
     StoreModule.forRoot({}),
     EffectsModule.forRoot([]),
+    TodoListStoreModule,
     StoreDevtoolsModule.instrument({
       name: 'NgRx Testing Store DevTools',
       logOnly: environment.production

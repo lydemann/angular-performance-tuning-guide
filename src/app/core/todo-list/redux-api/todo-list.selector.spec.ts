@@ -20,7 +20,7 @@ describe('TodoListSelector', () => {
       const store = jasmine.createSpyObj<Store<TodoListState>>('store', ['select']);
 
       const todoListSelector = new TodoListSelector(store);
-      todoListSelector.getTodoList();
+      todoListSelector.getTodoList$();
 
       expect(store.select).toHaveBeenCalledWith(todoListSelectorFn);
     });

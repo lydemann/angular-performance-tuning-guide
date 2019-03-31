@@ -19,13 +19,19 @@ export class TodoItemListRowComponent implements OnInit {
   @Input() public readOnlyTODO: boolean;
   @Output() public todoDelete = new EventEmitter();
   @Output() public todoEdit = new EventEmitter();
+  @Output() public todoComplete = new EventEmitter<TODOItem>();
 
   constructor() {}
 
   public ngOnInit() {}
 
   public completeClick() {
-    this.todoItem.completed = !this.todoItem.completed;
+    const newTodo = {
+      ...this.todoItem,
+      completed: !this.todoItem.completed
+    };
+
+    this.todoComplete.emit(newTodo);
   }
 
   public deleteClick() {

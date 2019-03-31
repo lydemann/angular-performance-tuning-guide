@@ -10,7 +10,8 @@ export enum TodoListActionTypes {
   TodoItemCreated = '[TodoList] TodoItemCreated',
   TodoItemDeleted = '[TodoList] TodoItemDeleted',
   TodoItemUpdated = '[TodoList] TodoItemUpdated',
-  TodoItemCompleted = '[TodoList] TodoItemCompleted'
+  TodoItemCompleted = '[TodoList] TodoItemCompleted',
+  SetTodoItemForEdit = '[TodoList] SetTodoItemForEdit'
 }
 
 export class LoadTodoList implements Action {
@@ -31,7 +32,7 @@ export class TodoItemsLoadFailed implements Action {
   constructor(public payload: Error) {}
 }
 
-export class TodoItemCreated implements Action {
+export class AddTodoItemAction implements Action {
   readonly type = TodoListActionTypes.TodoItemCreated;
 
   constructor(public payload: TODOItem) {}
@@ -45,6 +46,12 @@ export class TodoItemDeleted implements Action {
 
 export class TodoItemUpdated implements Action {
   readonly type = TodoListActionTypes.TodoItemUpdated;
+
+  constructor(public payload: TODOItem) {}
+}
+
+export class SetTodoItemForEditAction implements Action {
+  readonly type = TodoListActionTypes.SetTodoItemForEdit;
 
   constructor(public payload: TODOItem) {}
 }
@@ -63,11 +70,19 @@ export class TodoListActions {
     this.store.dispatch(new LoadTodoList());
   }
 
-  public deleteTodo(id: string) {
-    this.store.dispatch(new TodoItemDeleted(id));
+  public addTodo(todo: TODOItem): any {
+    this.store.dispatch(new AddTodoItemAction(todo));
   }
 
-  public todoItemUpdated(id: string) {
+  public todoItemUpdated(todoItem: TODOItem): any {
+    this.store.dispatch(new TodoItemUpdated(todoItem));
+  }
+
+  public setTodoItemForEdit(todoItem: TODOItem): any {
+    this.store.dispatch(new SetTodoItemForEditAction(todoItem));
+  }
+
+  public deleteTodo(id: string) {
     this.store.dispatch(new TodoItemDeleted(id));
   }
 

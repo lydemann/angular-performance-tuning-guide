@@ -1,4 +1,5 @@
 import { GenericAction } from '@app/core/store/generic-action';
+import { Guid } from '@app/shared/models/guid';
 import { TODOItem } from '@app/shared/models/todo-item';
 import { TodoListActionTypes } from './todo-list.actions';
 import { TodoListState } from './todo-list.model';
@@ -50,6 +51,8 @@ const todoItemCreatedReducer = (
   action: GenericAction<TodoListActionTypes, TODOItem>
 ): TodoListState => {
   const prevTodos = lastState.todos;
+
+  action.payload.id = Guid.newGuid();
   prevTodos.push(action.payload);
   const newTodos = prevTodos;
   return {
@@ -57,24 +60,46 @@ const todoItemCreatedReducer = (
     todos: newTodos
   };
 };
-const todoItemDeletedReducer = (
+
+const selectTodoItemForEditReducer = (
   lastState: TodoListState,
-  action: GenericAction<TodoListActionTypes, string>
+  action: GenericAction<TodoListActionTypes, TODOItem>
 ): TodoListState => {
-  const deleteIdx = lastState.todos.findIndex((todo) => todo.id === action.payload);
-
-  lastState.todos.splice(deleteIdx, 1);
-
-  return { ...lastState };
+  const indexToUpdate = lastState.todos.findIndex((todo) => todo.id === action.payload.id);
+  return {
+    ...lastState,
+    editTodoItemIdx: indexToUpdate
+  };
 };
+
 const todoItemUpdatedReducer = (
   lastState: TodoListState,
   action: GenericAction<TodoListActionTypes, TODOItem>
 ): TodoListState => {
-  const updatedTodoIdx = lastState.todos.findIndex((todo) => todo.id === action.payload.id);
-  lastState.todos[updatedTodoIdx] = action.payload;
-  return { ...lastState };
+  const newTodolist = lastState.todos.map((todo) =>
+    todo.id === action.payload.id ? action.payload : todo
+  );
+
+  return {
+    ...lastState,
+    editTodoItemIdx: null,
+    todos: newTodolist
+  };
 };
+
+const todoItemDeletedReducer = (
+  lastState: TodoListState,
+  action: GenericAction<TodoListActionTypes, string>
+): TodoListState => {
+  const newState = lastState.todos.filter((todo) => todo.id !== action.payload);
+
+  return {
+    ...lastState,
+    editTodoItemIdx: null,
+    todos: newState
+  };
+};
+
 const todoItemCompletedReducer = (
   lastState: TodoListState,
   action: GenericAction<TodoListActionTypes, string>
@@ -99,6 +124,8 @@ export const todoListReducers = (
       return todoItemCreatedReducer(lastState, action);
     case TodoListActionTypes.TodoItemsLoadFailed:
       return todoItemsLoadFailed(lastState, action);
+    case TodoListActionTypes.SetTodoItemForEdit:
+      return selectTodoItemForEditReducer(lastState, action);
     case TodoListActionTypes.TodoItemDeleted:
       return todoItemDeletedReducer(lastState, action);
     case TodoListActionTypes.TodoItemUpdated:

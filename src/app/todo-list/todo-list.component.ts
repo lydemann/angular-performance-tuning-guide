@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { TodoListService } from '@app/core/todo-list/todo-list.service';
 import { TODOItem } from '@app/shared/models/todo-item';
-import { TodoListActions } from './redux-api/todo-list.actions';
-import { TodoListSelector } from './redux-api/todo-list.selector';
 
 @Component({
   selector: 'app-todo-list',
@@ -11,25 +10,36 @@ import { TodoListSelector } from './redux-api/todo-list.selector';
 })
 export class TodoListComponent implements OnInit {
   // TODO: current todo item i store
-  public currentTODO: TODOItem = new TODOItem('', '');
-  public todoList$ = this.todoListSelector.getTodoList();
+  public todoList$ = this.todoListService.getTodoList();
+  public selectedTodoForEdit$ = this.todoListService.getTodoForEdit$();
+  public isLoading$ = this.todoListService.isLoading$;
 
-  constructor(
-    private todoListSelector: TodoListSelector,
-    private todoListActions: TodoListActions
-  ) {}
+  constructor(private todoListService: TodoListService) {}
 
   ngOnInit(): void {
-    this.todoListActions.loadTodoList();
+    this.todoListService.loadTodoList();
   }
 
   public deleteTodo(id: string) {
-    this.todoListActions.deleteTodo(id);
+    this.todoListService.deleteTodo(id);
   }
 
-  // TODO: dispatch action
-  public editTodo(todoItem: TODOItem) {
-    this.currentTODO = todoItem;
+  public setTodoForEdit(todoItem: TODOItem) {
+    this.todoListService.setTodoItemForEdit(todoItem);
+  }
+
+  /**
+   * todoItemEdit
+   */
+  public todoItemEdit(todoItem: TODOItem) {
+    this.todoListService.editTodo(todoItem);
+  }
+
+  /**
+   * todoItemCreate
+   */
+  public todoItemCreate(todoItem: TODOItem) {
+    this.todoListService.addTodo(todoItem);
   }
 
   public trackByFn(index, item) {
