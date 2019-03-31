@@ -6,7 +6,7 @@ import { TodoListSelector } from './redux-api/todo-list.selector';
 @Component({
   selector: 'app-todo-list',
   templateUrl: './todo-list.component.html',
-  styleUrls: ['./todo-list.component.css'],
+  styleUrls: ['./todo-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TodoListComponent implements OnInit {
@@ -30,5 +30,9 @@ export class TodoListComponent implements OnInit {
   // TODO: dispatch action
   public editTodo(todoItem: TODOItem) {
     this.currentTODO = todoItem;
+  }
+
+  public trackByFn(index, item) {
+    return item.id;
   }
 }
